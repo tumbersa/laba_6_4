@@ -66,28 +66,35 @@ sptSet[0]=true;
         // Pick the minimum distance vertex from the set of
         // vertices not yet processed. u is always equal to
         // src in the first iteration.
-        int u = minDistance(dist, sptSet,n);
+        int u = minDistance(dist, sptSet, n);
 
         // Mark the picked vertex as processed
         sptSet[u] = true;
 
         // Update dist value of the adjacent vertices of the
         // picked vertex.
-        for (int v = 1; v < n+1; v++)
+        for (int v = 1; v < n + 1; v++)
 
             // Update dist[v] only if is not in sptSet,
             // there is an edge from u to v, and total
             // weight of path from src to v through u is
             // smaller than current value of dist[v]
-            if (!sptSet[v] && graph[u][v]
-                && dist[u] != INT_MAX
-                && dist[u] + graph[u][v] < dist[v]) {
-                if (v != m2)
+            if (v != m2){
+                if (!sptSet[v] && graph[u][v]
+                    && dist[u] != INT_MAX
+                    && dist[u] + graph[u][v] + countWay(graph, n, v) < dist[v]) {
                     dist[v] = dist[u] + graph[u][v] + countWay(graph, n, v);
-                else
-                    dist[v] = dist[u] + graph[u][v];
-                predPoint[v]=u;
-            }
+                    predPoint[v] = u;
+                }
+                } else
+                    if (!sptSet[v] && graph[u][v]
+                           && dist[u] != INT_MAX
+                           && dist[u] + graph[u][v] < dist[v])
+                {
+                        dist[v] = dist[u] + graph[u][v];
+                        predPoint[v] = u;
+                }
+
         printSolution(dist,n);
     }
 
@@ -96,9 +103,11 @@ sptSet[0]=true;
     cout<<endl<<dist[m2]<<endl;
     int s=m2;
     cout<<m2<<" ";
-    fullWay[m2]=m2;
+    fullWay[n]=m2;
+    int l =n-1;
     while (s!=src){
-        fullWay[predPoint[s]]=predPoint[s];
+        fullWay[l]=predPoint[s];
+        l--;
         cout<<predPoint[s]<<' ';
         s=predPoint[s];
     }
@@ -113,6 +122,7 @@ sptSet[0]=true;
 
     delete[] dist;
     delete[] sptSet;
+
 }
 void print(int** a, int n) {
     for (int i = 0; i < n+1; i++)
